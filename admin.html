@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SXCTN - Admin Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #661f1f;
+            --primary-dark: #470707;
+            --primary-light: rgba(122, 17, 17, 0.05);
+            --accent: #f7bf25e1;
+            --accent-hover: #e0b22a;
+            --success: #10b981;
+            --success-hover: #059669;
+            --success-light: #ecfdf5;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --danger-light: #fef2f2;
+            --surface-base: #f8fafc;
+            --surface-card: #ffffff;
+            --surface-overlay: #ffffff;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --sidebar-border: rgba(255, 255, 255, 0.06);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-light: #ffffff;
+            --text-gray-cool: #94a3b8;
+            --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--surface-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            border-right: 1px solid var(--sidebar-border);
+            transition: var(--transition);
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .sidebar-brand h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .sidebar-brand i {
+            font-size: 1.4rem;
+            color: var(--accent);
+        }
+
+        .hamburger-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            padding: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: var(--text-gray-cool);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover {
+            color: var(--text-light);
+            background: var(--sidebar-hover);
+        }
+
+        .sidebar-menu a.active {
+            color: var(--text-light);
+            background: var(--primary);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--sidebar-border);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.08);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: var(--text-light);
+            border-color: var(--danger);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 32px 40px;
+            width: calc(100% - 280px);
+            transition: var(--transition);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .welcome-msg h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+        }
+
+        .welcome-msg p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface-card);
+            padding: 8px 18px 8px 10px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        .profile-badge .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .badge-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .badge-info span {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .badge-info small {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--surface-card);
+            padding: 20px 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-icon {
+            font-size: 1.3rem;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-data h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .card-data p {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-maroon {
+            border-top: 4px solid var(--primary);
+        }
+        .card-maroon .card-icon {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .card-gold {
+            border-top: 4px solid var(--accent);
+        }
+        .card-gold .card-icon {
+            background: #fefaf0;
+            color: #b29300;
+        }
+        .card-dark {
+            border-top: 4px solid var(--text-main);
+        }
+        .card-dark .card-icon {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+        .card-success {
+            border-top: 4px solid var(--success);
+        }
+        .card-success .card-icon {
+            background: var(--success-light);
+            color: var(--success);
+        }
+        .card-danger {
+            border-top: 4px solid var(--danger);
+        }
+        .card-danger .card-icon {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .control-panel {
+            background: var(--surface-card);
+            padding: 20px 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 30px;
+        }
+
+        .filter-box,
+        .search-box,
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-box {
+            flex: 1 1 200px;
+        }
+        .search-box {
+            flex: 2 1 280px;
+            position: relative;
+        }
+        .action-box {
+            flex: 1 1 auto;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+
+        .control-panel label {
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-panel select,
+        .control-panel input {
+            padding: 0 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            width: 100%;
+            height: 40px;
+            background-color: var(--surface-base);
+            transition: var(--transition);
+        }
+
+        .control-panel select:focus,
+        .control-panel input:focus {
+            background-color: var(--surface-card);
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(122, 17, 17, 0.12);
+        }
+
+        .search-box input {
+            padding-left: 40px;
+        }
+
+        .btn-save-registry,
+        .btn-report {
+            color: var(--text-light);
+            border: none;
+            padding: 0 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-save-registry {
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(122, 17, 17, 0.15);
+        }
+
+        .btn-save-registry:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-report {
+            background: var(--success);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .btn-report:hover {
+            background: var(--success-hover);
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            background: var(--surface-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+        }
+
+        .erp-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .erp-table th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 14px 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .erp-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .erp-table tbody tr:hover {
+            background: var(--primary-light);
+        }
+
+        .dept-lbl {
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-status {
+            padding: 6px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .present-btn:hover,
+        .present-btn.active {
+            background: var(--success-light);
+            color: var(--success-hover);
+            border-color: var(--success);
+        }
+
+        .absent-btn:hover,
+        .absent-btn.active {
+            background: var(--danger-light);
+            color: var(--danger-hover);
+            border-color: var(--danger);
+        }
+
+        .paid-btn:hover,
+        .paid-btn.active {
+            background: var(--success-light);
+            color: var(--success-hover);
+            border-color: var(--success);
+        }
+
+        .notpaid-btn:hover,
+        .notpaid-btn.active {
+            background: var(--danger-light);
+            color: var(--danger-hover);
+            border-color: var(--danger);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+        }
+
+        .modal-content {
+            background: var(--surface-overlay);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 840px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 28px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .btn-print,
+        .btn-close {
+            padding: 8px 18px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #cbd5e1;
+            background: var(--surface-card);
+            transition: var(--transition);
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+            margin-right: 6px;
+        }
+
+        .btn-print:hover {
+            background: var(--primary-dark);
+        }
+        .btn-close:hover {
+            background: var(--surface-base);
+        }
+
+        #print-area {
+            padding: 30px 28px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .report-header h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .report-header h3 {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .report-summary-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 15px 0 25px;
+            text-align: center;
+        }
+
+        .report-summary-box .summary-item {
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #e2e8f0;
+        }
+
+        .report-summary-box .summary-item strong {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .report-summary-box .summary-item .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .report-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .hamburger-menu {
+                display: block;
+            }
+            .sidebar-menu {
+                display: none;
+                padding: 8px 12px;
+                background: #0b111e;
+            }
+            .sidebar-menu.show {
+                display: flex;
+            }
+            .sidebar-footer {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px;
+            }
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-badge {
+                width: 100%;
+            }
+            .control-panel {
+                padding: 16px;
+            }
+            .action-box {
+                width: 100%;
+                flex-direction: column;
+            }
+            .btn-save-registry,
+            .btn-report {
+                width: 100%;
+            }
+            .table-container {
+                overflow-x: auto;
+            }
+            .report-summary-box {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #report-modal,
+            #report-modal *,
+            #print-area,
+            #print-area * {
+                visibility: visible;
+            }
+            #report-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-container" class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span style="font-weight:600; font-size:1.1rem; margin-left:5px;">Admin Portal</span>
+                </div>
+                <button class="hamburger-menu" onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu" id="nav-menu">
+                <a href="#" class="active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="#" onclick="generateReport()"><i class="fa-solid fa-file-invoice"></i> Generate Report</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="welcome-msg">
+                    <h1>Welcome, <span id="admin-name-display">Administrator</span></h1>
+                    <p id="current-date-txt"></p>
+                </div>
+                <div class="profile-badge">
+                    <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="badge-info">
+                        <span>Admin</span>
+                        <small>Full Access</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="card card-maroon">
+                    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-total">0</h3>
+                        <p>Total Students</p>
+                    </div>
+                </div>
+                <div class="card card-gold">
+                    <div class="card-icon"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-present">0</h3>
+                        <p>Present</p>
+                    </div>
+                </div>
+                <div class="card card-dark">
+                    <div class="card-icon"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-absent">0</h3>
+                        <p>Absent</p>
+                    </div>
+                </div>
+                <div class="card card-success">
+                    <div class="card-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-paid">0</h3>
+                        <p>Fees Paid</p>
+                    </div>
+                </div>
+                <div class="card card-danger">
+                    <div class="card-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-notpaid">0</h3>
+                        <p>Fees Pending</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="control-panel">
+                <div class="filter-box">
+                    <label for="dept-select"><i class="fa-solid fa-filter"></i> Department</label>
+                    <select id="dept-select" onchange="fetchAttendanceFromFirebase()">
+                        <option value="">-- Select Department --</option>
+                        <option value="M.A Economics">M.A Economics</option>
+                        <option value="M.A English">M.A English</option>
+                        <option value="M.A Social Work">M.A Social Work</option>
+                        <option value="M.Com Commerce">M.Com Commerce</option>
+                        <option value="M.Sc Botany">M.Sc Botany</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="M.Sc Mathematics">M.Sc Mathematics</option>
+                        <option value="Physics">Physics</option>
+                        <option value="M.Sc Zoology">M.Sc Zoology</option>
+                        <option value="Computer Application">Computer Application</option>
+                        <option value="Economics">Economics</option>
+                        <option value="English">English</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Botany">Botany</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Zoology">Zoology</option>
+                        <option value="Additional">Additional</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
+                        <option value="B.B.A">B.B.A</option>
+                        <option value="B.C.A">B.C.A</option>
+                        <option value="Banking and Finance">Banking and Finance</option>
+                        <option value="Corporate Secretaryship">Corporate Secretaryship</option>
+                        <option value="Criminology & Forensic Science">Criminology & Forensic Science</option>
+                        <option value="B.Com Honours">B.Com Honours</option>
+                        <option value="Maritime Logistics">Maritime Logistics</option>
+                        <option value="Physical Education">Physical Education</option>
+                        <option value="Tamil">Tamil</option>
+                        <option value="Visual Communication">Visual Communication</option>
+                        <option value="Archaeology">Archaeology</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <label for="shift-select"><i class="fa-solid fa-arrows-left-right"></i> Shift</label>
+                    <select id="shift-select" onchange="fetchAttendanceFromFirebase()">
+                        <option value="all">All Shifts</option>
+                        <option value="1">Shift 1</option>
+                        <option value="2">Shift 2</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <label for="date-select"><i class="fa-solid fa-calendar-days"></i> Date</label>
+                    <input type="date" id="date-select" onchange="fetchAttendanceFromFirebase()">
+                </div>
+
+                <div class="search-box">
+                    <label for="search-input"><i class="fa-solid fa-magnifying-glass"></i> Quick Lookup</label>
+                    <input type="text" id="search-input" oninput="filterAndRender()" placeholder="Search by Name or Register No...">
+                </div>
+
+                <div class="action-box">
+                    <button class="btn-save-registry" onclick="saveCurrentAttendance()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Sync Changes
+                    </button>
+                    <button class="btn-report" onclick="generateReport()">
+                        <i class="fa-solid fa-file-invoice"></i> Report
+                    </button>
+                </div>
+            </section>
+
+            <section class="table-container">
+                <table class="erp-table">
+                    <thead>
+                        <tr>
+                            <th>Reg Number</th>
+                            <th>Student Name</th>
+                            <th>Department</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th style="text-align:center;">Attendance</th>
+                            <th style="text-align:center;">Fee Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header no-print">
+                <h2>Generated Attendance & Fee Report</h2>
+                <div>
+                    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+                    <button class="btn-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+                </div>
+            </div>
+
+            <div id="print-area">
+                <div class="report-header">
+                    <h2>St. Xavier's College</h2>
+                    <h3>OFFICIAL ATTENDANCE & FEE REGISTRATION REPORT</h3>
+                    <p style="margin-top: 5px;"><strong>Department:</strong> <span id="report-dept-lbl">-</span> |
+                        <strong>Shift:</strong> <span id="report-shift-lbl">-</span> |
+                        <strong>Generated Date:</strong> <span id="report-date-lbl">-</span></p>
+                </div>
+
+                <div id="report-summary-box"></div>
+
+                <table width="100%" border="1" style="border-collapse: collapse; text-align: left; margin-bottom: 30px; font-size: 0.85rem;">
+                    <thead>
+                        <tr style="background: #f5f5f5;">
+                            <th style="padding: 10px;">Reg Number</th>
+                            <th style="padding: 10px;">Student Name</th>
+                            <th style="padding: 10px;">Department</th>
+                            <th style="padding: 10px;">Course</th>
+                            <th style="padding: 10px;">Year</th>
+                            <th style="padding: 10px;">Attendance</th>
+                            <th style="padding: 10px;">Fee Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body"></tbody>
+                </table>
+                <div class="report-footer">
+                    <p>Verified By: ___________________________</p>
+                    <p>Authorized Signature & Stamp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCe1M54WqCI622ol-4tnZ_RnvZs2I1O0Fk",
+            authDomain: "data-b4764.firebaseapp.com",
+            databaseURL: "https://data-b4764-default-rtdb.firebaseio.com",
+            projectId: "data-b4764",
+            storageBucket: "data-b4764.firebasestorage.app",
+            messagingSenderId: "168891754419",
+            appId: "1:168891754419:web:433f0e3eedb50f1ba7cdc6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ============================================================
+        // COMPLETE STUDENT DATASET - All Students including BCA + MCA
+        // ============================================================
+        const studentDataset = [
+            // ========== PG STUDENTS ==========
+            { regNo: "26PEC505", name: "AMALAREGIS S", dept: "M.A Economics", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PEN502", name: "ABINAYA A", dept: "M.A English", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PEN504", name: "ABISHA W", dept: "M.A English", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PSW515", name: "ANTO SWEETLIN A", dept: "M.A Social Work", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PSW508", name: "ARCHANA S", dept: "M.A Social Work", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PSW502", name: "NIKHIL SUMAN A", dept: "M.A Social Work", course: "M.A", shift: 2, year: "I PG" },
+            { regNo: "26PCO112", name: "ABINAYA J", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO132", name: "AERIC DEVOTTA", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO128", name: "ANTO SNOWLINE A", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO134", name: "BLESSY J J", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO133", name: "EZHIL ROSE S", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO104", name: "INFANT ANTO L", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO119", name: "LIBIN BABU S", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO107", name: "MACKSHILIN P", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO105", name: "SALAETH JEROCIN M", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PCO131", name: "SHINI JOHN J J", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "I PG" },
+            { regNo: "26PBO110", name: "ARUL SOPHIYA A", dept: "M.Sc Botany", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PBO105", name: "JENCY MERLIN G", dept: "M.Sc Botany", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PBO108", name: "ROCKLIN BINOSHA A M", dept: "M.Sc Botany", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PCH510", name: "ARUL SELVAM S", dept: "Chemistry", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PCS503", name: "JENIFER LUMINA A.G", dept: "Computer Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PCS513", name: "JOSHITH I", dept: "Computer Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS521", name: "ABI RAJA JOSHIBA S S", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS523", name: "ANTO VIRGINA J", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS513", name: "ANTONY SUKITTA M", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS514", name: "BENEZIA JUDITH J", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS518", name: "CYRIL AHARIN N", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PDS506", name: "JOSE THOMSON A", dept: "Data Science", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PMA109", name: "AROM ANTONY INFANTA S", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PMA118", name: "LEVIN SHEREENA A", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PMA113", name: "MICHLIN ROSY S", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PPH507", name: "JAMES RISHPA J", dept: "Physics", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PPH505", name: "JENOLEE A", dept: "Physics", course: "M.Sc", shift: 2, year: "I PG" },
+            { regNo: "26PZO105", name: "ANISH CHRISTO PRABHAKAR P", dept: "M.Sc Zoology", course: "M.Sc", shift: 1, year: "I PG" },
+            { regNo: "26PZO102", name: "MARIA ISSAL J", dept: "M.Sc Zoology", course: "M.Sc", shift: 1, year: "I PG" },
+
+            // ========== COMPUTER APPLICATION - BCA (UG) + MCA (PG) ==========
+            // BCA Students (UG) - Shift 2
+            { regNo: "26UCA516", name: "ALDRISHA J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA508", name: "BOWYA S", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA552", name: "HANNAH A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA550", name: "SAHAYA ANTONY VINOLIN R", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA527", name: "SAHAYA JONES M", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA529", name: "STEFFY J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "26UCA542", name: "VIKASH L", dept: "Computer Application", course: "B.C.A", shift: 2, year: "I UG" },
+            { regNo: "25UCA503", name: "JOSEPH RATCHIKA A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA504", name: "GOWTHAM KS", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA505", name: "MICHEAL NAVEEN T", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA507", name: "GODWIN PIO M", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA509", name: "ABISHANTH P", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA515", name: "ANU LITTO C", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA517", name: "AGASTIN JAMES A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA518", name: "AJILSHA RAJAKANI A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA520", name: "JEFRIN J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA524", name: "LINDA XAVIER D", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA530", name: "ANTO AJAY B", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA531", name: "MICHAEL SAM M", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA532", name: "PRABHU DOSS A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "25UCA541", name: "JEYASHEELAN J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "II UG" },
+            { regNo: "24UCA504", name: "JOE P", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA514", name: "UNISHA R", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA517", name: "PENYANIN PRANKLIN M", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA532", name: "RUBAN A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA534", name: "HEARTINA RAYEN A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA536", name: "AROKIYA INFANT JEROLINE R", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA537", name: "ASWIN A", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA541", name: "PUSHPARAJ J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA544", name: "JEGAN AKASH", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA539", name: "DERISHA MENNAZA J", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA550", name: "IRUDHAYA JOLINA PAIVA Y", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+            { regNo: "24UCA506", name: "MACMILAN L", dept: "Computer Application", course: "B.C.A", shift: 2, year: "III UG" },
+
+            // MCA Students (PG) - Shift 2
+            { regNo: "26PCA517", name: "ANTONY MARIA ROBIN X", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "26PCA512", name: "ARON ABISHEK A", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "26PCA505", name: "JEBA JOHN ZECHARIAH V", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "26PCA503", name: "KAVIYA M", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "26PCA501", name: "MARY JERLIN NEHA A", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "26PCA502", name: "MELPHA M S", dept: "Computer Application", course: "MCA", shift: 2, year: "I PG" },
+            { regNo: "25PCA508", name: "JERONE ABRAHAM J", dept: "Computer Application", course: "MCA", shift: 2, year: "II PG" },
+            { regNo: "25PCA503", name: "MARY SWETHA V", dept: "Computer Application", course: "MCA", shift: 2, year: "II PG" },
+            { regNo: "25PCA507", name: "ROBINSON I", dept: "Computer Application", course: "MCA", shift: 2, year: "II PG" },
+            { regNo: "25PCA501", name: "VINCY NIGIDHA I", dept: "Computer Application", course: "MCA", shift: 2, year: "II PG" },
+
+            // ========== II PG STUDENTS ==========
+            { regNo: "25PEC501", name: "NIVETHA MARY D", dept: "M.A Economics", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PEC502", name: "PRINCES J", dept: "M.A Economics", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PEN509", name: "ANTONY MARIA JENOBHAR P", dept: "M.A English", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PEN504", name: "MERCY SOUNDARIYA P", dept: "M.A English", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PEN512", name: "MIRACLIN CHELLA VAILANKANNI M", dept: "M.A English", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PEN507", name: "RECLINE SAGANA S", dept: "M.A English", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PSW503", name: "LOURTHU JERINA P", dept: "M.A Social Work", course: "M.A", shift: 2, year: "II PG" },
+            { regNo: "25PCO113", name: "ALESSANDRA SANIA S", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO114", name: "ARUL AROCKIA RAJ M", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO115", name: "JENCY SHENIKA A", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO106", name: "JENISH JEROME J M", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO101", name: "JENNIFER M", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO110", name: "MARIA ANTONY QUBA R", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO111", name: "MARIA SANTHYA P", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO105", name: "RAJA JENIFER S", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO119", name: "SENEE SHALLY M", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PCO107", name: "TONY LAMSON J", dept: "M.Com Commerce", course: "M.Com", shift: 1, year: "II PG" },
+            { regNo: "25PBO108", name: "JASMINE JEEVA MARY D", dept: "M.Sc Botany", course: "M.Sc", shift: 1, year: "II PG" },
+            { regNo: "25PCH505", name: "MIRSHA K", dept: "Chemistry", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PCH506", name: "SELVA VINNARASAN A", dept: "Chemistry", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PCS510", name: "BASKAR GILBERT RAJ M", dept: "Computer Science", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PDS501", name: "ANNIE MISTICA M", dept: "Data Science", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PDS503", name: "SELVI BARBARAL V", dept: "Data Science", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PMA108", name: "GNANA JIJI J", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "II PG" },
+            { regNo: "25PMA117", name: "IMMACULATE RATSINGA A", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "II PG" },
+            { regNo: "25PMA109", name: "JEROSE ANGELIN M", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "II PG" },
+            { regNo: "25PMA102", name: "NIVISHA T", dept: "M.Sc Mathematics", course: "M.Sc", shift: 1, year: "II PG" },
+            { regNo: "25PPH507", name: "BENITTA J P", dept: "Physics", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PPH501", name: "JERROSHIA INFANT SWARNA J", dept: "Physics", course: "M.Sc", shift: 2, year: "II PG" },
+            { regNo: "25PPH503", name: "JOSE CAROLINE A", dept: "Physics", course: "M.Sc", shift: 2, year: "II PG" },
+
+            // ========== I UG STUDENTS - SHIFT 1 ==========
+            { regNo: "26UEC139", name: "ALWIN P", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC165", name: "ANTONY LAZAR K", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC129", name: "ANTRO SUDHAN J", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC140", name: "BERNIT RAJA S", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC137", name: "CILVIYA M", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC144", name: "DELIXSON CROOS D", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC134", name: "JOHN PAUL S", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC164", name: "MANJU LUGUN M", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC135", name: "SAHAYA MELBA MOL M", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEC109", name: "SNOW JELVISH R", dept: "Economics", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN166", name: "ANOKA M.P.", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN167", name: "ANTO ABILASH T", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN174", name: "CLARET JOSHUA S", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN168", name: "GIFTINA B", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN141", name: "GNANAJESIKA M", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN133", name: "JEFRINA J", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN103", name: "JOAKIN MILTON P", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN106", name: "JOY JACKULINE J", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN143", name: "MARIA ANCY B", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN101", name: "MARIA LOUIS MONFORT J", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN145", name: "PAUL ANCY V", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN164", name: "ROSARIO F", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN134", name: "SAHAYA SIMI A", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN104", name: "SHARON ABRINA A", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UEN149", name: "VINSA D", dept: "English", course: "B.A", shift: 1, year: "I UG" },
+            { regNo: "26UCO154", name: "AGASTINA A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO118", name: "AJAY M", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO136", name: "DORTHYA M", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO134", name: "GODWINRAJ SNOWFAN M", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO138", name: "JUDE SAMSON J", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO125", name: "MARIYA JERBIYA A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO110", name: "MARIYA WINCY A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO139", name: "MERLIN A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO122", name: "MERLIN EVANCIA I", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO143", name: "MICHEAL AJIES A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO121", name: "PRAISY JENIFER J", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO131", name: "PRINCY S", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO127", name: "REESA P", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO170", name: "RIJO J", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO141", name: "SANJAY M", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO142", name: "SURENDAR V", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UCO135", name: "THOMAS FERNANDES A", dept: "Commerce", course: "B.Com", shift: 1, year: "I UG" },
+            { regNo: "26UBO134", name: "AROCKIYA MARY L", dept: "Botany", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UBO117", name: "DONIKA M", dept: "Botany", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UBO107", name: "MELVINA JUDITH M", dept: "Botany", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UBO101", name: "MERLIN MARY A", dept: "Botany", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UBO121", name: "SIRUMALAR A", dept: "Botany", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH107", name: "ANTO ANEESH J", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH138", name: "INIYA P", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH146", name: "JENIFER J", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH142", name: "JERMINA T", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH114", name: "JOSEPH SHERVIN A", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH135", name: "MELVIN L", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCH133", name: "SELVAKANI K", dept: "Chemistry", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS126", name: "AARLIN S", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS121", name: "ABISHA J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS125", name: "AJAY A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS137", name: "ANU HARINI A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS147", name: "AROCKIA ABISHA J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS123", name: "AROCKIA WINSLET A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS133", name: "ASMITA J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS124", name: "ESTHER RUBY D", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS110", name: "JABASTY EDSON K", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS139", name: "JESTIHA R", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS134", name: "JIBIN HERPAT L", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS109", name: "JOHANNA RACHEL A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS149", name: "JOHN RISHAN J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS144", name: "JOSEVA SUNDAR M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS127", name: "LOORTHU SNOWIN M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS132", name: "MARIA SEBASTIN A A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS117", name: "MERCY M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS116", name: "MERLIN M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS118", name: "RABINA S", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS152", name: "RAKSON JESU P", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UCS150", name: "SWITHA A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA114", name: "ANIS S", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA104", name: "ANTO PRISCA J", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA132", name: "ANTO RUFUS L", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA149", name: "EBINSHA V", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA115", name: "IMMACULATE SAJINI C", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA119", name: "JENISHA J", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA128", name: "MAGTHALENE BLESSA A", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UMA133", name: "REJINAMARY K", dept: "Mathematics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH148", name: "ANTO PEPPIN S", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH135", name: "INFANT LAYA A", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH127", name: "KILPAM RIYA J", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH132", name: "MUGESH C", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH136", name: "NISHITA M", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH111", name: "SASIRA R", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH101", name: "SERINA WILLIAMS R", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UPH147", name: "TAMIL VALAVAN J", dept: "Physics", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO147", name: "AASHMI S", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO127", name: "AROKIYAM S", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO125", name: "CLARA X", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO139", name: "JENIBER AROKKIYA ANISTA X", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO101", name: "KARUNYA D", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO130", name: "PRAVIN K", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO142", name: "RANJEET MURMU MR", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+            { regNo: "26UZO116", name: "SUDHAKARAN M", dept: "Zoology", course: "B.Sc", shift: 1, year: "I UG" },
+
+            // ========== I UG STUDENTS - SHIFT 2 ==========
+            { regNo: "26UBC551", name: "ADLIN RIYASH R", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC509", name: "EUCHRISTA MARY P", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC514", name: "INFANTINA IMMACULATE V", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC526", name: "JITHIN J", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC519", name: "MICHELLE DANICA F", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC556", name: "SELVAKUMAR B", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UBC552", name: "THANUSH ESHAL M", dept: "Additional", course: "Additional", shift: 2, year: "I UG" },
+            { regNo: "26UAI543", name: "AMOSH A", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UAI517", name: "CAROLIN LEEMA ROSE A", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UBA529", name: "ANISTON V", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA552", name: "ANTO PRAJAN S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA534", name: "ANTRO SARON R", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA543", name: "BABITHA E", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA525", name: "BERCIA A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA545", name: "BRANSON CORERA S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA553", name: "ENOCK JASPER B", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA548", name: "GEORGE MICHEL KILIPHIYA S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA537", name: "JAVANCY J", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA528", name: "JAYA A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA523", name: "JERSILIN E", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA540", name: "JOSHINI L", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA547", name: "MARIA AKASH K", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA536", name: "REBA MADELINE J", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA516", name: "SAM ANTO F", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBA544", name: "SUBITHA E", dept: "B.B.A", course: "B.B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBF513", name: "AGNES VIJI S", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF559", name: "DIVYA PRASANNA A", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF539", name: "GNANA MERLIN JOYCE A", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF533", name: "JERUSALAI S", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF540", name: "PRAVEEN P", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF503", name: "PREETHI X", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF520", name: "SAHAYA SANTHANA POMMI J", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF565", name: "SHEKA DHAS C", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBF551", name: "SUDHAN M", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO643", name: "ANTHONY SELVAM S", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO640", name: "AROCK REALINA M", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO517", name: "ASHA SWEETI A", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO635", name: "ASKANS M", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO565", name: "GEORGE DENIS M", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO632", name: "JENIFER MARY D", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO560", name: "KEVIN ANAND W", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO603", name: "MAGIMAI CHRISTO M", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO526", name: "RAYAPAN R S", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCO542", name: "SWEET STALIN F", dept: "Commerce", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCS546", name: "AROCK REJYA FILMA J P", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS516", name: "AROKKIYA KEBISHA K", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS549", name: "DERDIOUS AJI A", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS542", name: "JOEL RAJ A", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS523", name: "MELVIN R", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS529", name: "MICHEAL JOSE B", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS515", name: "SAHAYA JENO J", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCS514", name: "VINISHA V", dept: "Computer Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCC506", name: "BERSHIYA B", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCC509", name: "KEVINSTON M", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCC551", name: "MARIYA JONES S", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCC549", name: "MARTIN S", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCC519", name: "SUBHASHINI M", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UCF546", name: "AKSHAYA S B", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF536", name: "ALPHINA ANNAMARY A", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF553", name: "AROCKIYA MENCY M", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF537", name: "AVICIA J", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF551", name: "CATHERIN EVANJLIN R", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF556", name: "JAYASIMI R", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF542", name: "JEYA PRASHITHA I", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF518", name: "JOSEPIN VERONIKA J", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF515", name: "LAYONA A", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UCF521", name: "NIVYA J", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UEN516", name: "AARTHI S", dept: "English", course: "B.A", shift: 2, year: "I UG" },
+            { regNo: "26UEN518", name: "KEINA N", dept: "English", course: "B.A", shift: 2, year: "I UG" },
+            { regNo: "26UBH525", name: "ANJEL I", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBH532", name: "PRAVEENA K", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBH504", name: "RESHMAA C. S.", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBH526", name: "ROSELIN J", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBH517", name: "SAGAYA SNOWRO G", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UBH515", name: "SAHAYA DARIN SANJAY S", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UML511", name: "CHRISTER S", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UML530", name: "LEJOWIN PAUL S", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UML523", name: "MARIA AUSTIN A", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UML508", name: "ROHITH A", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "I UG" },
+            { regNo: "26UMA510", name: "ESTIN ROSNA T", dept: "Mathematics", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UMA511", name: "MICHEALFA JENOWA A", dept: "Mathematics", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UPE532", name: "ANTO SHEELA C", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPE529", name: "GODWIN ASESPAL V", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPE516", name: "HANTO SHALLWIN DURAI A", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPE511", name: "JACKSPARO M", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPE544", name: "JOHN PETER S", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPE536", name: "JOY BETCIA N", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "I UG" },
+            { regNo: "26UPH503", name: "MARIA KEVIN S", dept: "Physics", course: "B.Sc", shift: 2, year: "I UG" },
+            { regNo: "26UTA520", name: "ANTONY FRINSON P", dept: "Tamil", course: "B.A", shift: 2, year: "I UG" },
+            { regNo: "26UTA511", name: "JOSEPH DARIL K", dept: "Tamil", course: "B.A", shift: 2, year: "I UG" },
+            { regNo: "26UTA517", name: "JOVIN BLESSY A", dept: "Tamil", course: "B.A", shift: 2, year: "I UG" },
+            { regNo: "26UVC514", name: "YOUGAN M", dept: "Visual Communication", course: "B.Sc", shift: 2, year: "I UG" },
+
+            // ========== II UG STUDENTS - SHIFT 1 ==========
+            { regNo: "25UBO112", name: "SELVI E", dept: "Botany", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UBO140", name: "MICHAEL PELLPS A", dept: "Botany", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UBO148", name: "JAMES DEROCY A", dept: "Botany", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH101", name: "ARULMANI JEBA J", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH118", name: "OPHILIA JOHNY", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH125", name: "CHRISTO S", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH126", name: "MARIA RACHAL S", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH127", name: "SUJI KAROLIN L", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH139", name: "ALWIN A", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCH147", name: "JOE MARY BRISTA A", dept: "Chemistry", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCO102", name: "K SNOWS JEMIMA K", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO104", name: "ANTONY PRIYAN D", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO106", name: "KEVIN RAJ J", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO109", name: "AUGUSTA P", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO110", name: "SUJITH M", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO113", name: "SERGIUS S", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO114", name: "ANTONY NAVIS GODWIN S", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO116", name: "NANCY A", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO117", name: "ANTONY GEORGE A", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO119", name: "ANANDA RAJ A", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO121", name: "SABARI AADHITHIYAN P", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO122", name: "AFRIN R", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO142", name: "SNOWFER SAMUEL S", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO153", name: "SANTHAL AUXI YOHATHI R", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO154", name: "RAYNA CHRISTY LOPEZ H", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCO155", name: "ESROME E", dept: "Commerce", course: "B.Com", shift: 1, year: "II UG" },
+            { regNo: "25UCS102", name: "HARRIS BHENEDICT S", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS103", name: "STEPHEN JOSE SHERRWIN M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS104", name: "RAVIN XAVIER J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS108", name: "RISHALIN I", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS109", name: "ANTHONY SANTHOSH A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS110", name: "MARIAJOSELIN K", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS112", name: "JENITO MARTINA H", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS113", name: "ANTO RATHINA RAJ S", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS114", name: "SUNIL M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS115", name: "NOVIN ANTONY V", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS116", name: "MICHEAL ROBERT M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS125", name: "GNANASAMPATH A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS130", name: "PRICILLA A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS131", name: "DHARSHINI M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS133", name: "JAYANTHAN S", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS136", name: "ARUL SEEMON RAJ J", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS144", name: "JACK ADAMS M", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS145", name: "PRAMILA A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UCS156", name: "PANI PRIYAN J A", dept: "Computer Science", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UEC101", name: "ANTONY DASAN M", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC105", name: "ESTHER VIJILA A", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC106", name: "ANNAL EBISHA M", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC108", name: "RASMIKA S V", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC110", name: "DUSATH T", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC111", name: "MERVIN A", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC112", name: "SARAN R", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC113", name: "JERONSI J", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC114", name: "SAJITH B", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC123", name: "AUGUSTIN RUBA RAJ M", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC131", name: "SANTHOSH S", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC136", name: "AMBIKA P", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC138", name: "AMALA ANOSKA J", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC146", name: "SARULATHA S", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEC170", name: "KISHORE D", dept: "Economics", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN102", name: "RENITA A C", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN104", name: "SANJAY JOSE A", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN105", name: "AROCKIA PRAKASH S", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN106", name: "JEBA AKASH G", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN109", name: "PRIYAN J", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN111", name: "ANTO VIYAGA SMILAJA M", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN112", name: "ALIN DEENA A", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN115", name: "MERCY SARA P", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN132", name: "VILSON ANTO PREM A", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN137", name: "JENIFER SOUNDARYA NADAR F", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN142", name: "ROSELIN BENCY C", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN144", name: "SUJIBALA J", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN152", name: "JEBA STERLIN I", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN163", name: "MADHUMETHA R", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UEN165", name: "PALLAR KANISHKA SANTHANAKUMAR S", dept: "English", course: "B.A", shift: 1, year: "II UG" },
+            { regNo: "25UMA119", name: "JENCY S", dept: "Mathematics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UMA123", name: "SOPHIA J", dept: "Mathematics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UMA134", name: "AJISHA GEO A", dept: "Mathematics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UMA145", name: "PETCHIAMMAL V", dept: "Mathematics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UMA150", name: "JOYEL NAVEEN G", dept: "Mathematics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH102", name: "AKSHAYA R", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH118", name: "NEVIS FRANCIBA P", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH121", name: "FRANKLIN J", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH128", name: "ANBARASU A", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH130", name: "BRIJITH DHIWAHAR P", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH131", name: "MARIA ANTONY S", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UPH145", name: "SEKAR M", dept: "Physics", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO106", name: "STENILA M", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO113", name: "NISHA A", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO125", name: "RUMA A", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO134", name: "JOSEPIN RABENA R", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO142", name: "SIMRAN M", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+            { regNo: "25UZO145", name: "ANTHONY DASAN M", dept: "Zoology", course: "B.Sc", shift: 1, year: "II UG" },
+
+            // ========== II UG STUDENTS - SHIFT 2 ==========
+            { regNo: "25UAH518", name: "MITHUN A", dept: "Archaeology", course: "B.A", shift: 2, year: "II UG" },
+            { regNo: "25UAI501", name: "AKSHAL J", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI503", name: "ROHAN R", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI504", name: "ROSHAN R", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI505", name: "MARIA JACKCINA J", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI508", name: "MIRAKLIN R", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI519", name: "SAVARIS S", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI524", name: "JASMINE ARASI J", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI533", name: "JAMES INIYAN J", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UAI549", name: "DAVID RAJ", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UBA501", name: "HEPSIBA J K", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA504", name: "SARMILI S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA505", name: "PAUL JOSHAN M", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA506", name: "SABIRO HELAN MARY J", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA508", name: "STEPHEN CROSSLINA E", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA510", name: "BLESSIGA G", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA513", name: "JEYAPRIYA D", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA539", name: "RAFILDEN S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA545", name: "BINISH T", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA546", name: "SHARON P", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA548", name: "ANTONY BREDLIN A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA554", name: "ANTONITE NIRANJANA J", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA558", name: "STEEV LIBINSON A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA559", name: "PATRIN X", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA560", name: "ARUL BRIGST J", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA561", name: "ELCHIN MIK M", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA563", name: "ANTONY JETLIN A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBA564", name: "NEETHI ANTO P", dept: "B.B.A", course: "B.B.A", shift: 2, year: "II UG" },
+            { regNo: "25UBC501", name: "ANITA CARMEL S", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC502", name: "GETSHEYAL S", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC503", name: "AKASH J", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC504", name: "PAULVIN ARAVIND P", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC507", name: "DENIKA B", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC541", name: "VARSHA MARY A", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBC554", name: "TONY HAYDEN S.", dept: "Additional", course: "Additional", shift: 2, year: "II UG" },
+            { regNo: "25UBF509", name: "JOHN JEMIMEL FLORENCE J", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBF511", name: "DARSHINI P", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBF522", name: "JOSHUA GNANAXAVIER V", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBF538", name: "ANTONY RITHISH A", dept: "Banking and Finance", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH504", name: "ANNI JEYA RUFINA A", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH506", name: "ANTO VEVILA U", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH507", name: "ANTON TAMIL SELVAN S X", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH508", name: "MICHEAL CHELLA SANJAY U", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH517", name: "HANNAH JOSEPHINE J", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH523", name: "AROKYA VENILA W", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH524", name: "JOSE LEEMA K", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH527", name: "VINU MON J", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH532", name: "SHERWIN X", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH547", name: "MIRACLINE MESONA FERNANDO N", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UBH549", name: "MICHEAL VINCYA P", dept: "B.Com Honours", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO505", name: "MARIAREOPHIN G", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO508", name: "AROCKIA ABEL SAM GIFTSON X", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO509", name: "JOHAN ANTONY C", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO510", name: "ROSARY RONA A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO511", name: "SAHAYA CHITHRA X", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO515", name: "KAVIN G G", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO519", name: "INFANT ROHAN J", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO539", name: "JEBERSON J", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO546", name: "ANNPEPSI J", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO565", name: "ADAM XAVIER X", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO601", name: "SATHISH R", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO602", name: "SAIMAN S", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO603", name: "DIROSHINI A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO605", name: "VINOTHKUMAR A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO609", name: "PRINCE NICKSON R", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO610", name: "SHYAM ANTRO S", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO611", name: "PREJIN RICHARD A M", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO612", name: "SAM S", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO613", name: "LIYAN D", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO618", name: "GEORGE AMITIN A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO620", name: "ABISH PRIYAN A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO622", name: "CHRISWIN D", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO628", name: "SAHAYA ROSHAN S", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO638", name: "SAHAYA SERIN LUXSHA J", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO644", name: "ANISH ANDRU A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCO650", name: "SAGIEENA A", dept: "Commerce", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC521", name: "SAHAYA AKASH M", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC536", name: "IRUTHAYA HELINA M", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC551", name: "SALEITH JUDSON J", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC553", name: "JESU MARIA JOSE A", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC555", name: "DENIEL A", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCC556", name: "MERLIN A", dept: "Corporate Secretaryship", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UCS503", name: "SHILVIYA R", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS504", name: "SAHAYA JAMES S", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS505", name: "JIBIN JAS J", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS507", name: "ROOBINA SELVI N", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS509", name: "NEGO A", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS510", name: "AJAI ARON A", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS526", name: "NAVIS DANIEL D", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS540", name: "JOYANA MARY A", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCS544", name: "JOSEPRAVIN P", dept: "Computer Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF501", name: "ASHWELL M. L", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF502", name: "JERZON E N", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF504", name: "AROCK VARSHA C", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF506", name: "ANNIE MAGHIBA J K", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF507", name: "JEFRIN PRABU P", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF509", name: "NISHANTHINI G", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF511", name: "DHANISHA P", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF536", name: "PION RATHISH S", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UCF539", name: "ANU R", dept: "Criminology & Forensic Science", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UEN545", name: "RUBAN K", dept: "English", course: "B.A", shift: 2, year: "II UG" },
+            { regNo: "25UML501", name: "PRAVIN RAJ B", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UML510", name: "JENISH JERALD J", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UML513", name: "MATHEW A", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UML523", name: "ANTONY CHITHIRAI SELVAN G", dept: "Maritime Logistics", course: "B.Com", shift: 2, year: "II UG" },
+            { regNo: "25UPE504", name: "REHANA F", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "II UG" },
+            { regNo: "25UPE523", name: "ABI JOSNA J.V", dept: "Physical Education", course: "B.P.Ed", shift: 2, year: "II UG" },
+            { regNo: "25UTA524", name: "MICHEAL RAJAN S", dept: "Tamil", course: "B.A", shift: 2, year: "II UG" },
+            { regNo: "25UTA536", name: "SHARMILA V", dept: "Tamil", course: "B.A", shift: 2, year: "II UG" },
+            { regNo: "25UTA552", name: "AARON BONIFACE GODSON C", dept: "Tamil", course: "B.A", shift: 2, year: "II UG" },
+            { regNo: "25UVC508", name: "ROHIT ROSE J", dept: "Visual Communication", course: "B.Sc", shift: 2, year: "II UG" },
+            { regNo: "25UVC522", name: "SHIJO T M", dept: "Visual Communication", course: "B.Sc", shift: 2, year: "II UG" },
+
+            // ========== III UG STUDENTS ==========
+            { regNo: "24UAIT505", name: "CELLSON I", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "III UG" },
+            { regNo: "24UAIT506", name: "MICHEAL PRASANNA F", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "III UG" },
+            { regNo: "24UAIT513", name: "GNANA JERON A", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "III UG" },
+            { regNo: "24UAIT536", name: "YOVAN G", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "III UG" },
+            { regNo: "24UAIT540", name: "SETHOO M", dept: "Artificial Intelligence", course: "B.Sc", shift: 2, year: "III UG" },
+            { regNo: "24UBAT511", name: "ABIRAHAM R", dept: "B.B.A", course: "B.B.A", shift: 2, year: "III UG" },
+            { regNo: "24UBAT514", name: "NAVIS JERALD S", dept: "B.B.A", course: "B.B.A", shift: 2, year: "III UG" },
+            { regNo: "24UBAT518", name: "PRINCE RAJA A", dept: "B.B.A", course: "B.B.A", shift: 2, year: "III UG" }
+        ];
+
+        // ============================================================
+        // SESSION & STATE
+        // ============================================================
+        let attendanceRegistry = {};
+        let paymentRegistry = {};
+        let currentUser = null;
+
+        // ============================================================
+        // INITIALIZATION - Check Admin Session
+        // ============================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const session = localStorage.getItem('sxcUserSession');
+            console.log("Session:", session); // Debug log
+
+            if (!session) {
+                console.log("No session, redirecting to index");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                currentUser = JSON.parse(session);
+                console.log("Current User:", currentUser); // Debug log
+                
+                if (currentUser.role !== 'admin') {
+                    console.log("Not admin, redirecting to index");
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (e) {
+                console.error("Session parse error:", e);
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Set admin name
+            document.getElementById('admin-name-display').textContent = currentUser.staffName || 'Administrator';
+
+            // Set current date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-select').value = today;
+            document.getElementById('current-date-txt').textContent = new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Fetch data
+            fetchAttendanceFromFirebase();
+        });
+
+        // ============================================================
+        // FUNCTIONS
+        // ============================================================
+        function handleLogout() {
+            localStorage.removeItem('sxcUserSession');
+            window.location.href = 'index.html';
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('nav-menu').classList.toggle('show');
+        }
+
+        function fetchAttendanceFromFirebase() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedShift = document.getElementById('shift-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+
+            if (!selectedDate || !selectedDept) {
+                document.getElementById('student-table-body').innerHTML =
+                    `<tr><td colspan="7" style="text-align:center; padding:30px; color:gray;">Please select a department to view students.</td></tr>`;
+                resetMetrics();
+                return;
+            }
+
+            const baseNodePath = btoa(selectedDept).replace(/=/g, "");
+
+            db.ref(`attendance/${baseNodePath}/${selectedDate}`).once('value', (snapshot) => {
+                attendanceRegistry = snapshot.val() || {};
+                db.ref(`payments/${baseNodePath}/${selectedDate}`).once('value', (paySnapshot) => {
+                    paymentRegistry = paySnapshot.val() || {};
+
+                    let deptStudents = studentDataset.filter(s => s.dept === selectedDept);
+
+                    if (selectedShift !== 'all') {
+                        deptStudents = deptStudents.filter(s => s.shift === parseInt(selectedShift));
+                    }
+
+                    deptStudents.forEach(student => {
+                        if (!attendanceRegistry[student.regNo]) attendanceRegistry[student.regNo] = "Present";
+                        if (!paymentRegistry[student.regNo]) paymentRegistry[student.regNo] = "Not Paid";
+                    });
+
+                    filterAndRender();
+                });
+            });
+        }
+
+        function setStudentStatus(regNo, status) {
+            attendanceRegistry[regNo] = status;
+            renderMetrics();
+
+            const row = document.getElementById(`row-${regNo}`);
+            if (row) {
+                row.querySelector('.present-btn').classList.toggle('active', status === 'Present');
+                row.querySelector('.absent-btn').classList.toggle('active', status === 'Absent');
+            }
+        }
+
+        function setPaymentStatus(regNo, payStatus) {
+            paymentRegistry[regNo] = payStatus;
+            renderMetrics();
+
+            const row = document.getElementById(`row-${regNo}`);
+            if (row) {
+                row.querySelector('.paid-btn').classList.toggle('active', payStatus === 'Paid');
+                row.querySelector('.notpaid-btn').classList.toggle('active', payStatus === 'Not Paid');
+            }
+        }
+
+        function saveCurrentAttendance() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+
+            if (!selectedDate || !selectedDept) {
+                alert("Please select a department and date.");
+                return;
+            }
+
+            const baseNodePath = btoa(selectedDept).replace(/=/g, "");
+            const updatePayload = {};
+            updatePayload[`attendance/${baseNodePath}/${selectedDate}`] = attendanceRegistry;
+            updatePayload[`payments/${baseNodePath}/${selectedDate}`] = paymentRegistry;
+
+            db.ref().update(updatePayload)
+                .then(() => alert("✅ Cloud Sync Complete! Data successfully backed up."))
+                .catch((err) => alert("❌ Transactional Exception: " + err.message));
+        }
+
+        function filterAndRender() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedShift = document.getElementById('shift-select').value;
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const tableBody = document.getElementById('student-table-body');
+
+            tableBody.innerHTML = "";
+
+            if (!selectedDept) {
+                tableBody.innerHTML =
+                    `<tr><td colspan="7" style="text-align:center; padding:30px; color:gray;">Please select a department to view students.</td></tr>`;
+                resetMetrics();
+                return;
+            }
+
+            let filteredList = studentDataset.filter(student => student.dept === selectedDept);
+
+            if (selectedShift !== 'all') {
+                filteredList = filteredList.filter(student => student.shift === parseInt(selectedShift));
+            }
+
+            filteredList = filteredList.filter(student =>
+                student.name.toLowerCase().includes(searchVal) ||
+                student.regNo.toLowerCase().includes(searchVal)
+            );
+
+            if (filteredList.length === 0) {
+                tableBody.innerHTML =
+                    `<tr><td colspan="7" style="text-align:center; padding:30px; color:gray;">No students found matching the criteria.</td></tr>`;
+                renderMetrics();
+                return;
+            }
+
+            filteredList.forEach(student => {
+                const currentStatus = attendanceRegistry[student.regNo] || "Present";
+                const currentPayStatus = paymentRegistry[student.regNo] || "Not Paid";
+
+                const tr = document.createElement('tr');
+                tr.id = `row-${student.regNo}`;
+                tr.innerHTML = `
+                        <td style="font-weight:700; color:#1a237e;">${student.regNo}</td>
+                        <td style="font-weight:600;">${student.name}</td>
+                        <td><span class="dept-lbl">${student.dept}</span></td>
+                        <td>${student.course || student.dept}</td>
+                        <td>${student.year}</td>
+                        <td align="center">
+                            <div class="action-cell">
+                                <button class="btn-status present-btn ${currentStatus === 'Present' ? 'active' : ''}" onclick="setStudentStatus('${student.regNo}', 'Present')">
+                                    <i class="fa-solid fa-circle-check"></i> Present
+                                </button>
+                                <button class="btn-status absent-btn ${currentStatus === 'Absent' ? 'active' : ''}" onclick="setStudentStatus('${student.regNo}', 'Absent')">
+                                    <i class="fa-solid fa-circle-xmark"></i> Absent
+                                </button>
+                            </div>
+                        </td>
+                        <td align="center">
+                            <div class="action-cell">
+                                <button class="btn-status paid-btn ${currentPayStatus === 'Paid' ? 'active' : ''}" onclick="setPaymentStatus('${student.regNo}', 'Paid')">
+                                    <i class="fa-solid fa-money-bill-wave"></i> Paid
+                                </button>
+                                <button class="btn-status notpaid-btn ${currentPayStatus === 'Not Paid' ? 'active' : ''}" onclick="setPaymentStatus('${student.regNo}', 'Not Paid')">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Not Paid
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                tableBody.appendChild(tr);
+            });
+
+            renderMetrics();
+        }
+
+        function renderMetrics() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedShift = document.getElementById('shift-select').value;
+
+            if (!selectedDept) {
+                resetMetrics();
+                return;
+            }
+
+            let deptStudents = studentDataset.filter(s => s.dept === selectedDept);
+
+            if (selectedShift !== 'all') {
+                deptStudents = deptStudents.filter(s => s.shift === parseInt(selectedShift));
+            }
+
+            const totalStudents = deptStudents.length;
+
+            let presentCount = 0,
+                absentCount = 0,
+                paidCount = 0,
+                notPaidCount = 0;
+
+            deptStudents.forEach(student => {
+                const status = attendanceRegistry[student.regNo] || "Present";
+                if (status === "Present") presentCount++;
+                if (status === "Absent") absentCount++;
+
+                const payStatus = paymentRegistry[student.regNo] || "Not Paid";
+                if (payStatus === "Paid") paidCount++;
+                if (payStatus === "Not Paid") notPaidCount++;
+            });
+
+            document.getElementById('stat-total').textContent = totalStudents;
+            document.getElementById('stat-present').textContent = presentCount;
+            document.getElementById('stat-absent').textContent = absentCount;
+            document.getElementById('stat-paid').textContent = paidCount;
+            document.getElementById('stat-notpaid').textContent = notPaidCount;
+        }
+
+        function resetMetrics() {
+            document.getElementById('stat-total').textContent = '0';
+            document.getElementById('stat-present').textContent = '0';
+            document.getElementById('stat-absent').textContent = '0';
+            document.getElementById('stat-paid').textContent = '0';
+            document.getElementById('stat-notpaid').textContent = '0';
+        }
+
+        function generateReport() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedShift = document.getElementById('shift-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+            const reportTableBody = document.getElementById('report-table-body');
+
+            if (!selectedDept) {
+                alert("Please select a department to generate report.");
+                return;
+            }
+
+            document.getElementById('report-dept-lbl').textContent = selectedDept;
+            document.getElementById('report-shift-lbl').textContent = selectedShift === 'all' ? 'All Shifts' : `Shift ${selectedShift}`;
+            document.getElementById('report-date-lbl').textContent = selectedDate || "Not Specified";
+            reportTableBody.innerHTML = "";
+
+            let targetStudents = studentDataset.filter(s => s.dept === selectedDept);
+
+            if (selectedShift !== 'all') {
+                targetStudents = targetStudents.filter(s => s.shift === parseInt(selectedShift));
+            }
+
+            let reportPresent = 0,
+                reportAbsent = 0,
+                reportPaid = 0,
+                reportNotPaid = 0;
+
+            if (targetStudents.length === 0) {
+                reportTableBody.innerHTML =
+                    `<tr><td colspan="7" style="text-align:center; padding:15px;">No records found.</td></tr>`;
+            } else {
+                targetStudents.forEach(student => {
+                    const status = attendanceRegistry[student.regNo] || "Present";
+                    const payStatus = paymentRegistry[student.regNo] || "Not Paid";
+
+                    if (status === "Present") reportPresent++;
+                    else reportAbsent++;
+
+                    if (payStatus === "Paid") reportPaid++;
+                    else reportNotPaid++;
+
+                    const statusColor = status === "Present" ? "color:#2e7d32; font-weight:700;" :
+                        "color:#c62828; font-weight:700;";
+                    const payColor = payStatus === "Paid" ? "color:#2e7d32; font-weight:700;" :
+                        "color:#c62828; font-weight:700;";
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                            <td style="padding:10px; border:1px solid #ddd;">${student.regNo}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${student.name}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${student.dept}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${student.course || student.dept}</td>
+                            <td style="padding:10px; border:1px solid #ddd;">${student.year}</td>
+                            <td style="padding:10px; border:1px solid #ddd; ${statusColor}">${status}</td>
+                            <td style="padding:10px; border:1px solid #ddd; ${payColor}">${payStatus}</td>
+                        `;
+                    reportTableBody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('report-summary-box').innerHTML = `
+                    <div class="summary-item" style="background:#f1f8e9; border-color:#c5e1a5;">
+                        <strong>Total Present</strong>
+                        <div class="value" style="color:#1b5e20;">${reportPresent}</div>
+                    </div>
+                    <div class="summary-item" style="background:#ffebee; border-color:#ffcdd2;">
+                        <strong>Total Absent</strong>
+                        <div class="value" style="color:#b71c1c;">${reportAbsent}</div>
+                    </div>
+                    <div class="summary-item" style="background:#e8f5e9; border-color:#a5d6a7;">
+                        <strong>Fees Paid</strong>
+                        <div class="value" style="color:#1b5e20;">${reportPaid}</div>
+                    </div>
+                    <div class="summary-item" style="background:#fff3e0; border-color:#ffe0b2;">
+                        <strong>Fees Pending</strong>
+                        <div class="value" style="color:#e65100;">${reportNotPaid}</div>
+                    </div>
+                `;
+
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+
+</html>

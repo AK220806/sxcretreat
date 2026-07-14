@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SXCTN-ERP Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f7f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-header {
+            background-color: #cb2026;
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .app-footer {
+            background-color: #cb2026;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin-top: auto;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .login-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .brand-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-wrapper {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border: 1px solid #eaeaea;
+        }
+
+        .college-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .brand-section h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #212529;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .brand-section .location {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .selection-box {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eaeaea;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .icon-wrapper {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            margin-right: 20px;
+        }
+
+        .staff-color {
+            background-color: #f0ebfa;
+            color: #6f42c1;
+        }
+
+        .student-color {
+            background-color: #ffeef2;
+            color: #fd397a;
+        }
+
+        .card-text {
+            flex-grow: 1;
+        }
+
+        .card-text span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .arrow-icon {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .footer-info {
+            text-align: center;
+            margin-top: auto;
+            padding-bottom: 15px;
+        }
+
+        .policy-links {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .policy-links a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .policy-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright-text {
+            font-size: 0.75rem;
+            color: #a0a0a0;
+            line-height: 1.5;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-modal.active {
+            display: flex;
+        }
+
+        .login-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .login-modal-content .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+        }
+
+        .login-modal-content .close-btn:hover {
+            color: #333;
+        }
+
+        .login-modal-content h2 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #1a237e;
+        }
+
+        .login-modal-content .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .login-modal-content .input-group {
+            margin-bottom: 18px;
+        }
+
+        .login-modal-content .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .login-modal-content .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.2s;
+        }
+
+        .login-modal-content .input-group input:focus {
+            outline: none;
+            border-color: #661f1f;
+            box-shadow: 0 0 0 3px rgba(102, 31, 31, 0.1);
+        }
+
+        .login-modal-content .login-error {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .login-modal-content .login-error.show {
+            display: block;
+        }
+
+        .login-modal-content .btn-login-submit {
+            width: 100%;
+            padding: 14px;
+            background: #661f1f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-modal-content .btn-login-submit:hover {
+            background: #470707;
+        }
+
+        .login-modal-content .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e8f5e9;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .login-modal-content .role-badge.admin {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .login-modal-content .password-hint {
+            color: #666;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Department list in modal */
+        .dept-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .dept-list .dept-tag {
+            background: #e9ecef;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            color: #495057;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="app-header">
+        <h1>SXCTN-ERP</h1>
+    </header>
+
+    <main class="login-container">
+        <div class="brand-section">
+            <div class="logo-wrapper">
+                <img src="Screenshot 2026-07-04 121706.png" alt="St. Xavier's College Logo" class="college-logo">
+            </div>
+            <h2>ST. XAVIER'S COLLEGE (AUTONOMOUS)</h2>
+            <p class="location">PALAYAMKOTTAI</p>
+        </div>
+
+        <div class="selection-box">
+            <div class="login-card" onclick="openLoginModal('staff')">
+                <div class="icon-wrapper staff-color">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="card-text">
+                    <span>Staff Login</span>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </div>
+
+            <div class="login-card" onclick="openLoginModal('admin')">
+                <div class="icon-wrapper student-color">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="card-text">
+                    <span>Admin Login</span>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </div>
+        </div>
+
+        <div class="footer-info">
+            <p class="policy-links">
+                <a href="#">Terms and Conditions</a> • <a href="#">Privacy Policy</a>
+            </p>
+            <p class="copyright-text">
+                © Copyright 2026 ST. XAVIER'S COLLEGE (AUTONOMOUS) V - 2.2500125
+            </p>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>© ST. XAVIER'S COLLEGE (AUTONOMOUS)</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-modal-content">
+            <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+            <h2 id="modalTitle">Staff Login</h2>
+            <p class="subtitle" id="modalSubtitle">Enter your credentials to access the portal</p>
+            <div class="role-badge" id="roleBadge">👤 Staff Member</div>
+
+            <div class="input-group">
+                <label for="loginUsername"><i class="fa-regular fa-user"></i> Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username" autocomplete="username">
+            </div>
+
+            <div class="input-group">
+                <label for="loginPassword"><i class="fa-regular fa-lock"></i> Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your phone number" autocomplete="current-password">
+                <span class="password-hint">💡 Use your registered phone number as password</span>
+            </div>
+
+            <div class="login-error" id="loginError">Invalid username or password. Please try again.</div>
+
+            <button class="btn-login-submit" onclick="handleLogin()">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // STAFF CREDENTIALS - All Staff from Campus Ministry Document
+        // Each department has ONE username with MULTIPLE passwords (phone numbers)
+        // Format: {department}_{shift}_2026
+        // ============================================================
+        const staffCredentials = {
+            // ========== SHIFT I - COMPUTER SCIENCE ==========
+            'compsci_1_2026': {
+                passwords: ['8098613447', '9486891167'],
+                shift: 1,
+                department: 'Computer Science',
+                staffNames: ['Dr. B. Rex Cyril', 'Dr. S. Niraja P Rayen'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - COMPUTER SCIENCE ==========
+            'compsci_2_2026': {
+                passwords: ['9486891167', '8300070198'],
+                shift: 2,
+                department: 'Computer Science',
+                staffNames: ['Dr. S. Niraja P Rayen', 'Dr. A. Driyani'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - COMMERCE ==========
+            'commerce_1_2026': {
+                passwords: ['9942430625', '9442063851'],
+                shift: 1,
+                department: 'Commerce',
+                staffNames: ['Dr. P. Arockia Juliet', 'Dr.K S Arockiasamy'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - COMMERCE ==========
+            'commerce_2_2026': {
+                passwords: ['9842999062', '9791064509', '8940277554'],
+                shift: 2,
+                department: 'Commerce',
+                staffNames: ['Dr. P. Berline Kingcy', 'Dr. S. Arul Stephen', 'Mr. E. Amala Regin'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - ENGLISH ==========
+            'english_1_2026': {
+                passwords: ['7708052024', '9487032727'],
+                shift: 1,
+                department: 'English',
+                staffNames: ['Dr. Lizie Williams', 'Ms. I. Iniya'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - ENGLISH ==========
+            'english_2_2026': {
+                passwords: ['7868014283', '9003388506', '9500533665'],
+                shift: 2,
+                department: 'English',
+                staffNames: ['Ms. B. Manohari', 'Ms. Joze Rubika', 'Mr. Melwin'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - MATHEMATICS ==========
+            'mathematics_1_2026': {
+                passwords: ['9865225238', '9597156616'],
+                shift: 1,
+                department: 'Mathematics',
+                staffNames: ['Dr. Y. Therese Sunitha Mary', 'Dr. S. Philo'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - MATHEMATICS ==========
+            'mathematics_2_2026': {
+                passwords: ['9787415569', '8098405321'],
+                shift: 2,
+                department: 'Mathematics',
+                staffNames: ['Dr. S. Sahayaraj Joseph Nirmalkumar', 'Dr. J. Vinolin'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - PHYSICS ==========
+            'physics_1_2026': {
+                passwords: ['9994025814', '6381134316'],
+                shift: 1,
+                department: 'Physics',
+                staffNames: ['Dr. B. Helina', 'Dr. S. Anna Venus'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - PHYSICS ==========
+            'physics_2_2026': {
+                passwords: ['9047967718', '8870142137'],
+                shift: 2,
+                department: 'Physics',
+                staffNames: ['Dr. S. Aron Rabi', 'Dr. C. Bhagya Lakshmi'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - TAMIL ==========
+            'tamil_1_2026': {
+                passwords: ['9486480534', '8778380385'],
+                shift: 1,
+                department: 'Tamil',
+                staffNames: ['Dr. S. Ravi Jesuraj', 'Dr. V. Rilbert Janarthanan'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - TAMIL ==========
+            'tamil_2_2026': {
+                passwords: ['9943312542', '9843835485', '9944688645'],
+                shift: 2,
+                department: 'Tamil',
+                staffNames: ['Dr. J. Albert', 'Dr. S. Tamiliniyan', 'Mrs. R. Vijaya'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - CHEMISTRY ==========
+            'chemistry_1_2026': {
+                passwords: ['9488024234', '9600278407'],
+                shift: 1,
+                department: 'Chemistry',
+                staffNames: ['Dr. M. Baby Mariyatra', 'Dr. C. Christopher'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - CHEMISTRY ==========
+            'chemistry_2_2026': {
+                passwords: ['9944274226'],
+                shift: 2,
+                department: 'Chemistry',
+                staffNames: ['Dr. A. Anto Arockia Raj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - ZOOLOGY ==========
+            'zoology_1_2026': {
+                passwords: ['9443581585'],
+                shift: 1,
+                department: 'Zoology',
+                staffNames: ['Dr. R. Santha Kumari'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - BOTANY ==========
+            'botany_1_2026': {
+                passwords: ['9600341157'],
+                shift: 1,
+                department: 'Botany',
+                staffNames: ['Dr. L Joelri Michael Raj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - ECONOMICS ==========
+            'economics_1_2026': {
+                passwords: ['9723050771'],
+                shift: 1,
+                department: 'Economics',
+                staffNames: ['Dr. J. Justin John Stephen'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT I - FOLKLORE ==========
+            'folklore_1_2026': {
+                passwords: ['9585389209'],
+                shift: 1,
+                department: 'Folklore',
+                staffNames: ['Ms. P. Beaula Bush'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - ARTIFICIAL INTELLIGENCE ==========
+            'ai_2_2026': {
+                passwords: ['9003064102'],
+                shift: 2,
+                department: 'Artificial Intelligence',
+                staffNames: ['Mr. S. Shajin Yesu Raj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - CRIMINOLOGY ==========
+            'criminology_2_2026': {
+                passwords: ['9188802128'],
+                shift: 2,
+                department: 'Criminology & Forensic Science',
+                staffNames: ['Mr. J. Shaison'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - SOCIAL WORK ==========
+            'socialwork_2_2026': {
+                passwords: ['8838018822'],
+                shift: 2,
+                department: 'M.A Social Work',
+                staffNames: ['Ms. Sweety Grace'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - DATA SCIENCE ==========
+            'datascience_2_2026': {
+                passwords: ['8148115817'],
+                shift: 2,
+                department: 'Data Science',
+                staffNames: ['Dr. Y. Sunil Raj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - BANKING & FINANCE ==========
+            'banking_2_2026': {
+                passwords: ['6383403636'],
+                shift: 2,
+                department: 'Banking and Finance',
+                staffNames: ['Dr. A. Martina Franciska'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - MARITIME LOGISTICS ==========
+            'maritime_2_2026': {
+                passwords: ['9600822082'],
+                shift: 2,
+                department: 'Maritime Logistics',
+                staffNames: ['Dr. Julian Daniel'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - B.COM HONOURS ==========
+            'bcomhonours_2_2026': {
+                passwords: ['9843569324'],
+                shift: 2,
+                department: 'B.Com Honours',
+                staffNames: ['Dr.V. David raj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - M.A ECONOMICS ==========
+            'maeconomics_2_2026': {
+                passwords: ['9787457235'],
+                shift: 2,
+                department: 'M.A Economics',
+                staffNames: ['Dr. M. Anto Soniya'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - COMPUTER APPLICATION ==========
+            'compapp_2_2026': {
+                passwords: ['9943952643', '9600417098'],
+                shift: 2,
+                department: 'Computer Application',
+                staffNames: ['Dr. K. Joy Alfia', 'Mr. E.Alex Prabahar'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - PHYSICAL EDUCATION ==========
+            'physicaledu_2_2026': {
+                passwords: ['9965027841'],
+                shift: 2,
+                department: 'Physical Education',
+                staffNames: ['Dr. S. Athisayaraj'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - VISUAL COMMUNICATION ==========
+            'visualcomm_2_2026': {
+                passwords: ['6381608750'],
+                shift: 2,
+                department: 'Visual Communication',
+                staffNames: ['Dr. M. Jebakumar'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - BUSINESS ADMINISTRATION ==========
+            'businessadmin_2_2026': {
+                passwords: ['9486693866'],
+                shift: 2,
+                department: 'B.B.A',
+                staffNames: ['Dr. P. Stella'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - CORPORATE SECRETARYSHIP ==========
+            'corpsec_2_2026': {
+                passwords: ['8883981557'],
+                shift: 2,
+                department: 'Corporate Secretaryship',
+                staffNames: ['Dr.M.Rex Angelo'],
+                role: 'staff'
+            },
+
+            // ========== SHIFT II - ARCHAEOLOGY ==========
+            'archaeology_2_2026': {
+                passwords: ['8078498304'],
+                shift: 2,
+                department: 'Archaeology',
+                staffNames: ['Ms. Rosilo Joseph'],
+                role: 'staff'
+            },
+
+            // ========== ADMIN ==========
+            'admin_2026': {
+                passwords: ['admin@2026'],
+                role: 'admin',
+                staffNames: ['Administrator']
+            }
+        };
+
+        // Department list for display
+        const departmentList = [
+            { username: 'compsci_1_2026', dept: 'Computer Science (Shift 1)' },
+            { username: 'compsci_2_2026', dept: 'Computer Science (Shift 2)' },
+            { username: 'commerce_1_2026', dept: 'Commerce (Shift 1)' },
+            { username: 'commerce_2_2026', dept: 'Commerce (Shift 2)' },
+            { username: 'english_1_2026', dept: 'English (Shift 1)' },
+            { username: 'english_2_2026', dept: 'English (Shift 2)' },
+            { username: 'mathematics_1_2026', dept: 'Mathematics (Shift 1)' },
+            { username: 'mathematics_2_2026', dept: 'Mathematics (Shift 2)' },
+            { username: 'physics_1_2026', dept: 'Physics (Shift 1)' },
+            { username: 'physics_2_2026', dept: 'Physics (Shift 2)' },
+            { username: 'tamil_1_2026', dept: 'Tamil (Shift 1)' },
+            { username: 'tamil_2_2026', dept: 'Tamil (Shift 2)' },
+            { username: 'chemistry_1_2026', dept: 'Chemistry (Shift 1)' },
+            { username: 'chemistry_2_2026', dept: 'Chemistry (Shift 2)' },
+            { username: 'zoology_1_2026', dept: 'Zoology (Shift 1)' },
+            { username: 'botany_1_2026', dept: 'Botany (Shift 1)' },
+            { username: 'economics_1_2026', dept: 'Economics (Shift 1)' },
+            { username: 'folklore_1_2026', dept: 'Folklore (Shift 1)' },
+            { username: 'ai_2_2026', dept: 'Artificial Intelligence (Shift 2)' },
+            { username: 'criminology_2_2026', dept: 'Criminology (Shift 2)' },
+            { username: 'socialwork_2_2026', dept: 'M.A Social Work (Shift 2)' },
+            { username: 'datascience_2_2026', dept: 'Data Science (Shift 2)' },
+            { username: 'banking_2_2026', dept: 'Banking & Finance (Shift 2)' },
+            { username: 'maritime_2_2026', dept: 'Maritime Logistics (Shift 2)' },
+            { username: 'bcomhonours_2_2026', dept: 'B.Com Honours (Shift 2)' },
+            { username: 'maeconomics_2_2026', dept: 'M.A Economics (Shift 2)' },
+            { username: 'compapp_2_2026', dept: 'Computer Application (Shift 2)' },
+            { username: 'physicaledu_2_2026', dept: 'Physical Education (Shift 2)' },
+            { username: 'visualcomm_2_2026', dept: 'Visual Communication (Shift 2)' },
+            { username: 'businessadmin_2_2026', dept: 'B.B.A (Shift 2)' },
+            { username: 'corpsec_2_2026', dept: 'Corporate Secretaryship (Shift 2)' },
+            { username: 'archaeology_2_2026', dept: 'Archaeology (Shift 2)' }
+        ];
+
+        let currentLoginRole = 'staff';
+
+        function openLoginModal(role) {
+            currentLoginRole = role;
+            const modal = document.getElementById('loginModal');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const badge = document.getElementById('roleBadge');
+            const error = document.getElementById('loginError');
+            
+            error.classList.remove('show');
+            
+            if (role === 'staff') {
+                title.textContent = 'Staff Login';
+                subtitle.textContent = 'Enter your username and phone number to access the portal';
+                badge.textContent = '👤 Staff Member';
+                badge.className = 'role-badge';
+            } else {
+                title.textContent = 'Admin Login';
+                subtitle.textContent = 'Enter administrator credentials';
+                badge.textContent = '🔑 Administrator';
+                badge.className = 'role-badge admin';
+            }
+            
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            modal.classList.add('active');
+            
+            setTimeout(() => document.getElementById('loginUsername').focus(), 100);
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const error = document.getElementById('loginError');
+            
+            error.classList.remove('show');
+            
+            if (!username || !password) {
+                error.textContent = 'Please enter both username and password.';
+                error.classList.add('show');
+                return;
+            }
+            
+            // Check credentials
+            const user = staffCredentials[username];
+            
+            if (!user) {
+                error.textContent = 'Invalid username. Please check and try again.';
+                error.classList.add('show');
+                return;
+            }
+            
+            // Check if password matches any of the allowed passwords
+            const isPasswordValid = user.passwords.some(p => p === password);
+            
+            if (!isPasswordValid) {
+                error.textContent = 'Incorrect password. Please use your registered phone number.';
+                error.classList.add('show');
+                return;
+            }
+            
+            // Check role match
+            if (currentLoginRole === 'admin' && user.role !== 'admin') {
+                error.textContent = 'This is not an admin account. Please use staff login.';
+                error.classList.add('show');
+                return;
+            }
+            
+            if (currentLoginRole === 'staff' && user.role === 'admin') {
+                error.textContent = 'This is an admin account. Please use admin login.';
+                error.classList.add('show');
+                return;
+            }
+            
+            // Find which staff member this is (to display name)
+            let matchedStaffName = user.staffNames[0] || 'Staff';
+            if (user.staffNames.length > 1) {
+                // Find the staff name that matches the password
+                const index = user.passwords.indexOf(password);
+                if (index !== -1 && user.staffNames[index]) {
+                    matchedStaffName = user.staffNames[index];
+                }
+            }
+            
+            // --- LOGIN SUCCESS ---
+            const sessionData = {
+                username: username,
+                role: user.role,
+                department: user.department || null,
+                shift: user.shift || null,
+                staffName: matchedStaffName,
+                loginTime: new Date().toISOString()
+            };
+            
+            localStorage.setItem('sxcUserSession', JSON.stringify(sessionData));
+            
+            // Redirect based on role
+            if (user.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'staff.html';
+            }
+        }
+
+        // Enter key support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('active')) {
+                handleLogin();
+            }
+            if (e.key === 'Escape') {
+                closeLoginModal();
+            }
+        });
+
+        // Close modal on outside click
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLoginModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

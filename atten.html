@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SXCTN - ERP Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* --- BRAND ARCHITECTURE --- */
+            --primary: #661f1f;
+            --primary-dark: #470707;
+            --primary-light: rgba(122, 17, 17, 0.05);
+            --primary-light-hover: rgba(122, 17, 17, 0.08);
+            --accent: #f7bf25e1;
+            --accent-hover: #e0b22a;
+            --accent-light: #fefaf0;
+    
+            /* --- UX SEMANTIC STATUS PATTERNS --- */
+            --success: #10b981;
+            --success-hover: #059669;
+            --success-light: #ecfdf5;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --danger-light: #fef2f2;
+            --info: #3b82f6;
+            --info-light: #eff6ff;
+    
+            /* --- DESIGN SYSTEM SURFACE LAYERS --- */
+            --surface-base: #f8fafc;
+            /* App structural background */
+            --surface-card: #ffffff;
+            /* Primary structural containers */
+            --surface-overlay: #ffffff;
+            /* Modal windows and popovers */
+            --sidebar-bg: #0f172a;
+            /* Deep slate architectural sidebar */
+            --sidebar-hover: #1e293b;
+            --sidebar-border: rgba(255, 255, 255, 0.06);
+    
+            /* --- TYPOGRAPHY HIERARCHY --- */
+            --text-main: #0f172a;
+            /* Deep contrast legible reading */
+            --text-muted: #64748b;
+            /* Secondary descriptive helper details */
+            --text-light: #ffffff;
+            /* Crisp contrast against dark surfaces */
+            --text-gray-cool: #94a3b8;
+            /* Unselected menu states */
+    
+            /* --- GLASSMORPHISM CAPABILITIES --- */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-input: rgba(255, 255, 255, 0.85);
+    
+            /* --- SHADOWS, ELEVATION, & KINETICS --- */
+            --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+            --shadow-glass: 0 20px 40px 0 rgba(0, 0, 0, 0.25);
+    
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+    
+        /* ==========================================================================
+               GLOBAL DESIGN RESETS
+               ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+    
+        body {
+            background: var(--surface-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    
+        .hidden {
+            display: none !important;
+        }
+    
+        /* ==========================================================================
+               PREMIUM GLASSMORPHISM LOGIN PAGE
+               ========================================================================== */
+        .login-page {
+            background: radial-gradient(circle at top right, var(--primary) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+        }
+    
+        .glass-login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
+            border: 1px solid var(--glass-border);
+            padding: 48px 40px;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-glass);
+        }
+    
+        .logo-area {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+    
+        .logo-area i {
+            font-size: 3.5rem;
+            color: var(--accent);
+            filter: drop-shadow(0 4px 12px rgba(244, 197, 66, 0.2));
+            margin-bottom: 14px;
+        }
+    
+        .logo-area h2 {
+            font-size: 1.75rem;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+    
+        .logo-area p {
+            color: var(--text-gray-cool);
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+    
+        .input-group {
+            margin-bottom: 24px;
+        }
+    
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            letter-spacing: 0.2px;
+        }
+    
+        .input-group label i {
+            margin-right: 6px;
+        }
+    
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--glass-input);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+    
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface-card);
+            box-shadow: 0 0 0 4px rgba(244, 197, 66, 0.3);
+        }
+    
+        .error-msg {
+            color: #fca5a5;
+            font-size: 0.85rem;
+            margin-top: -16px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(244, 197, 66, 0.2);
+            transition: var(--transition);
+        }
+    
+        .btn-login:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(244, 197, 66, 0.35);
+        }
+    
+        /* ==========================================================================
+               APP DESKTOP ENVIRONMENT LAYOUT
+               ========================================================================== */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+    
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            border-right: 1px solid var(--sidebar-border);
+            transition: var(--transition);
+        }
+    
+        .sidebar-brand {
+            padding: 32px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    
+        .sidebar-brand h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-light);
+        }
+    
+        .sidebar-brand i {
+            font-size: 1.4rem;
+            color: var(--accent);
+        }
+    
+        .hamburger-menu {
+            display: none;
+        }
+    
+        .sidebar-menu {
+            padding: 12px 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+    
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: var(--text-gray-cool);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+    
+        .sidebar-menu a:hover {
+            color: var(--text-light);
+            background: var(--sidebar-hover);
+        }
+    
+        .sidebar-menu a.active {
+            color: var(--text-light);
+            background: var(--primary);
+        }
+    
+        .sidebar-footer {
+            padding: 24px 16px;
+            border-top: 1px solid var(--sidebar-border);
+        }
+    
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.08);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+    
+        .btn-logout:hover {
+            background: var(--danger);
+            color: var(--text-light);
+            border-color: var(--danger);
+        }
+    
+        .main-content {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 40px 48px;
+            width: calc(100% - 280px);
+            transition: var(--transition);
+        }
+    
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 36px;
+        }
+    
+        .welcome-msg h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.75px;
+            color: var(--text-main);
+        }
+    
+        .welcome-msg p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+    
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface-card);
+            padding: 8px 18px 8px 10px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+        }
+    
+        .profile-badge .avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 700;
+        }
+    
+        .badge-info {
+            display: flex;
+            flex-direction: column;
+        }
+    
+        .badge-info span {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    
+        .badge-info small {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+    
+        /* ==========================================================================
+               UI DATA CARDS ARCHITECTURE
+               ========================================================================== */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+    
+        .card {
+            background: var(--surface-card);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            transition: var(--transition);
+        }
+    
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+    
+        .card-icon {
+            font-size: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .card-data h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+    
+        .card-data p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+    
+        .card-maroon {
+            border-top: 4px solid var(--primary);
+        }
+    
+        .card-maroon .card-icon {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+    
+        .card-gold {
+            border-top: 4px solid var(--accent);
+        }
+    
+        .card-gold .card-icon {
+            background: var(--accent-light);
+            color: var(--accent-hover);
+        }
+    
+        .card-dark {
+            border-top: 4px solid var(--text-main);
+        }
+    
+        .card-dark .card-icon {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+    
+        /* ==========================================================================
+               CONTROL MODAL PANELS AND FILTERS
+               ========================================================================== */
+        .control-panel {
+            background: var(--surface-card);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 36px;
+        }
+    
+        .filter-box,
+        .search-box,
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+    
+        .filter-box {
+            flex: 1 1 200px;
+        }
+    
+        .search-box {
+            flex: 2 1 300px;
+            position: relative;
+        }
+    
+        .action-box {
+            flex: 1 1 auto;
+            flex-direction: row;
+            justify-content: flex-end;
+        }
+    
+        .control-panel label {
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    
+        .control-panel select,
+        .control-panel input {
+            padding: 0 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            width: 100%;
+            height: 44px;
+            background-color: var(--surface-base);
+            transition: var(--transition);
+        }
+    
+        .control-panel select:focus,
+        .control-panel input:focus {
+            background-color: var(--surface-card);
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(122, 17, 17, 0.12);
+        }
+    
+        .search-box input {
+            padding-left: 44px;
+        }
+    
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            color: var(--text-gray-cool);
+            font-size: 1rem;
+        }
+    
+        .btn-report,
+        .btn-save-registry {
+            color: var(--text-light);
+            border: none;
+            padding: 0 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+    
+        .btn-report {
+            background: var(--primary);
+            box-shadow: 0 4px 12px rgba(122, 17, 17, 0.15);
+        }
+    
+        .btn-report:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+    
+        .btn-save-registry {
+            background: var(--success);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+    
+        .btn-save-registry:hover {
+            background: var(--success-hover);
+            transform: translateY(-1px);
+        }
+    
+        /* ==========================================================================
+               ENTERPRISE DATA TABLE
+               ========================================================================== */
+        .table-container {
+            background: var(--surface-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 24px;
+        }
+    
+        .erp-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+    
+        .erp-table th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 16px 24px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    
+        .erp-table td {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+    
+        .erp-table tbody tr {
+            transition: var(--transition);
+        }
+    
+        .erp-table tbody tr:hover {
+            background: var(--primary-light);
+        }
+    
+        .dept-lbl {
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+    
+        /* UX ATTENDANCE TRIGGERS */
+        .action-cell {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+    
+        .btn-status {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+    
+        .present-btn:hover,
+        .present-btn.active {
+            background: var(--success-light);
+            color: var(--success-hover);
+            border-color: var(--success);
+        }
+    
+        .absent-btn:hover,
+        .absent-btn.active {
+            background: var(--danger-light);
+            color: var(--danger-hover);
+            border-color: var(--danger);
+        }
+    
+        /* ==========================================================================
+               MODAL DIALOG MANAGEMENT SYSTEM
+               ========================================================================== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+        }
+    
+        .modal-content {
+            background: var(--surface-overlay);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 840px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid #e2e8f0;
+        }
+    
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.25px;
+        }
+    
+        .btn-print,
+        .btn-close {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #cbd5e1;
+            background: var(--surface-card);
+            transition: var(--transition);
+        }
+    
+        .btn-print {
+            background: var(--primary);
+            color: var(--text-light);
+            border-color: var(--primary);
+            margin-right: 8px;
+        }
+    
+        .btn-print:hover {
+            background: var(--primary-dark);
+        }
+    
+        .btn-close:hover {
+            background: var(--surface-base);
+            color: var(--text-main);
+        }
+        .pay-btn.active {
+    background: #2e7d32;
+    color: white;
+    border-color: #2e7d32;
+    box-shadow: 0 2px 4px rgba(46, 125, 50, 0.3);
+}
+
+/* Not Pay (Danger) Active State */
+.notpay-btn.active {
+    background: #c62828;
+    color: white;
+    border-color: #c62828;
+    box-shadow: 0 2px 4px rgba(198, 40, 40, 0.3);
+}
+    
+        .print-sheet {
+            padding: 40px;
+        }
+    
+        .report-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+    
+        .report-header h2 {
+            color: var(--primary);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+    
+        .report-header h3 {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 36px;
+        }
+    
+        .report-table th,
+        .report-table td {
+            padding: 14px 18px;
+            border: 1px solid #cbd5e1;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+    
+        .report-table th {
+            background: var(--surface-base);
+            font-weight: 700;
+        }
+    
+        .report-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+    
+        /* ==========================================================================
+               ADAPTIVE BREAKPOINTS (UX RESPONSIVENESS)
+               ========================================================================== */
+        @media (max-width: 992px) {
+            .main-content {
+                padding: 40px 24px;
+            }
+        }
+    
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+    
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+    
+            .sidebar-brand {
+                padding: 20px;
+            }
+    
+            .hamburger-menu {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-light);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+    
+            .sidebar-menu {
+                display: none;
+                padding: 8px 12px;
+                background: #0b111e;
+            }
+    
+            .sidebar-menu.show {
+                display: flex;
+            }
+    
+            .sidebar-footer {
+                display: none;
+            }
+    
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 24px 16px;
+            }
+    
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+    
+            .profile-badge {
+                width: 100%;
+            }
+    
+            .control-panel {
+                padding: 16px;
+            }
+    
+            .action-box {
+                width: 100%;
+                flex-direction: column;
+            }
+    
+            .btn-report,
+            .btn-save-registry {
+                width: 100%;
+            }
+    
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    
+        /* ==========================================================================
+               PRINT ARCHITECTURE GRAPHICS SYSTEM
+               ========================================================================== */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+    
+            #report-modal,
+            #report-modal *,
+            #print-area,
+            #print-area * {
+                visibility: visible;
+            }
+    
+            #report-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                padding: 0;
+            }
+    
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+   
+</head>
+
+<body>
+
+    <div id="dashboard-container" class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span style="font-weight: 600; font-size: 1.2rem; margin-left: 5px;">Staff Portal</span>
+                </div>
+                <button class="hamburger-menu" onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+            <nav class="sidebar-menu" id="nav-menu">
+                <a href="#" class="active" onclick="document.location='pay.html'"><i class="fa-solid fa-chart-pie"></i>
+                    Store Student Data</a>
+                <a href="#" onclick="document.location='aentas.html'"><i class="fa-solid fa-file-invoice"></i> Pay
+                    Fees</a>
+                <a href="#" onclick="generateReport()"><i class="fa-solid fa-file-invoice"></i> Generate Report</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="handleResetWorkspace()">
+                    <i class="fa-solid fa-rotate-left"></i> Reset View
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <div class="welcome-msg">
+                    <h1>Welcome Back, <span id="faculty-display-name">Professor Hariharan</span></h1>
+                    <p id="current-date-txt"></p>
+                </div>
+                <div class="profile-badge">
+                    <div class="avatar"><i class="fa-solid fa-user-clock"></i></div>
+                    <div class="badge-info">
+                        <span id="display-staff-id">ST2026</span>
+                        <small style="display:block; color:#777;">Active Session</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="card card-maroon">
+                    <div class="card-icon" style="color: #800000;"><i class="fa-solid fa-users"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-total">0</h3>
+                        <p>Total Dept Students</p>
+                    </div>
+                </div>
+                <div class="card card-gold">
+                    <div class="card-icon" style="color: #b29300;"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-present">0</h3>
+                        <p>Marked Present</p>
+                    </div>
+                </div>
+                <div class="card card-dark">
+                    <div class="card-icon" style="color: #333;"><i class="fa-solid fa-user-xmark"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-absent">0</h3>
+                        <p>Marked Absent</p>
+                    </div>
+                </div>
+                <div class="card card-success">
+                    <div class="card-icon" style="color: #2e7d32;"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-paid">0</h3>
+                        <p>Fees Paid</p>
+                    </div>
+                </div>
+                <div class="card card-danger">
+                    <div class="card-icon" style="color: #c62828;"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <div class="card-data">
+                        <h3 id="stat-notpaid">0</h3>
+                        <p>Fees Pending</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="control-panel">
+                <div class="filter-box">
+                    <label for="dept-select"><i class="fa-solid fa-filter"></i> Department</label>
+                    <select id="dept-select" onchange="fetchAttendanceFromFirebase()">
+                        <option value="B.C.A">B.C.A</option>
+                        <option value="B.COM. CORPORATE SECRETARYSHIP">B.COM. CORPORATE SECRETARYSHIP</option>
+                        <option value="ARCHAEOLOGY">ARCHAEOLOGY</option>
+                        <option value="SOCIAL WORK">SOCIAL WORK</option>
+                        <option value="M. Sc">M. Sc</option>
+                        <option value="PHYSICAL EDUCATION">PHYSICAL EDUCATION</option>
+                        <option value="M.C.A">M.C.A</option>
+                        <option value="B.Sc. MEDICAL LABORATORY TECHNOLOGY">B.Sc. MEDICAL LABORATORY TECHNOLOGY</option>
+                        <option value="B.A. ENGLISH">B.A. ENGLISH</option>
+                        <option value="B.Sc. ZOOLOGY">B.Sc. ZOOLOGY</option>
+                        <option value="B.Sc. BOTANY">B.Sc. BOTANY</option>
+                        <option value="B.Sc. VISUAL COMMUNICATION">B.Sc. VISUAL COMMUNICATION</option>
+                        <option value="B.B.A">B.B.A</option>
+                    </select>
+                </div>
+
+                <div class="filter-box">
+                    <label for="date-select"><i class="fa-solid fa-calendar-days"></i> Attendance Date</label>
+                    <input type="date" id="date-select" onchange="fetchAttendanceFromFirebase()">
+                </div>
+
+                <div class="search-box">
+                    <label for="search-input"><i class="fa-solid fa-magnifying-glass"></i> Quick Lookup</label>
+                    <input type="text" id="search-input" oninput="filterAndRender()"
+                        placeholder="Search by Name or Register No...">
+                </div>
+
+                <div class="action-box">
+                    <button class="btn-save-registry" onclick="saveCurrentAttendance()"
+                        style="padding: 10px 15px; background: #1a237e; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight:500;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Sync Changes
+                    </button>
+                    <button class="btn-report" onclick="generateReport()">
+                        <i class="fa-solid fa-file-invoice"></i> Report
+                    </button>
+                </div>
+            </section>
+
+            <section class="table-container">
+                <table class="erp-table">
+                    <thead>
+                        <tr>
+                            <th>Reg Number</th>
+                            <th>Student Name</th>
+                            <th>Department</th>
+                            <th>Year / Sem</th>
+                            <th style="text-align: center;">Fee Status</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div id="report-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header no-print"
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px;">
+                <h2>Generated Attendance & Fee Report</h2>
+                <div>
+                    <button class="btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+                    <button class="btn-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+                </div>
+            </div>
+
+            <div id="print-area">
+                <div class="report-header" style="text-align: center; margin-bottom: 20px;">
+                    <h2>St. Xavier's College</h2>
+                    <h3>OFFICIAL ATTENDANCE & FEE REGISTRATION REPORT</h3>
+                    <p style="margin-top: 5px;"><strong>Department:</strong> <span id="report-dept-lbl">-</span> |
+                        <strong>Generated Date:</strong> <span id="report-date-lbl">-</span>
+                    </p>
+                </div>
+
+                <div id="report-summary-box"></div>
+
+                <table width="100%" border="1"
+                    style="border-collapse: collapse; text-align: left; margin-bottom: 30px; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: #f5f5f5;">
+                            <th style="padding: 10px;">Reg Number</th>
+                            <th style="padding: 10px;">Student Name</th>
+                            <th style="padding: 10px;">Department</th>
+                            <th style="padding: 10px;">Fee Status</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body"></tbody>
+                </table>
+                <div class="report-footer" style="display: flex; justify-content: space-between; margin-top: 60px;">
+                    <p>Verified By: ___________________________</p>
+                    <p>Authorized Signature & Stamp</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCe1M54WqCI622ol-4tnZ_RnvZs2I1O0Fk",
+            authDomain: "data-b4764.firebaseapp.com",
+            databaseURL: "https://data-b4764-default-rtdb.firebaseio.com",
+            projectId: "data-b4764",
+            storageBucket: "data-b4764.firebasestorage.app",
+            messagingSenderId: "168891754419",
+            appId: "1:168891754419:web:433f0e3eedb50f1ba7cdc6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const studentDataset = [
+            { regNo: "26UCC506", name: "B.BERSHIYA", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "26UCC509", name: "M.KEVINSTON", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "26UCC519", name: "M.SUBHASHINI", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "26UCC549", name: "S.MARTIN", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "26UCC551", name: "S.MARIYA JONES", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "25UCC556", name: "A.MERLIN", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "25UCC527", name: "A.JOEL PUSHPARAJ (REPEAT SEMESTER)", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "I UG", },
+            { regNo: "25UCC521", name: "M.SAHAYA AKASH", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "II UG", },
+            { regNo: "25UCC536", name: "M.IRUTHAYA HELINA", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "II UG", },
+            { regNo: "25UCC551", name: "J.SALEITH JUDSON", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "II UG", },
+            { regNo: "25UCC553", name: "A.JESU MARIA JOSE", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "II UG", },
+            { regNo: "25UCC555", name: "A.DANIEL", dept: "B.COM. CORPORATE SECRETARYSHIP", year: "II UG", },
+            { regNo: "24UCA101", name: "HARIHARAN M", dept: "B.C.A", year: "II UG" }
+        ];
+
+        let attendanceRegistry = {};
+        let paymentRegistry = {};
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('date-select');
+            if (dateInput) dateInput.value = today;
+
+            document.getElementById('current-date-txt').innerText = new Date().toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Auto-fetch since layout loads instantly
+            fetchAttendanceFromFirebase();
+        });
+
+        window.handleResetWorkspace = function () {
+            document.getElementById('search-input').value = "";
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-select').value = today;
+            document.getElementById('dept-select').selectedIndex = 0;
+            fetchAttendanceFromFirebase();
+        };
+
+        window.toggleMobileMenu = function () {
+            document.getElementById('nav-menu').classList.toggle('show');
+        };
+
+        window.fetchAttendanceFromFirebase = function () {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+
+            if (!selectedDate) return;
+
+            const baseNodePath = btoa(selectedDept).replace(/=/g, "");
+
+            db.ref(`attendance/${baseNodePath}/${selectedDate}`).once('value', (snapshot) => {
+                attendanceRegistry = snapshot.val() || {};
+
+                db.ref(`payments/${baseNodePath}/${selectedDate}`).once('value', (paySnapshot) => {
+                    paymentRegistry = paySnapshot.val() || {};
+
+                    studentDataset.forEach(student => {
+                        if (student.dept === selectedDept) {
+                            if (!attendanceRegistry[student.regNo]) attendanceRegistry[student.regNo] = "Present";
+                            if (!paymentRegistry[student.regNo]) paymentRegistry[student.regNo] = "Not Paid";
+                        }
+                    });
+
+                    filterAndRender();
+                });
+            });
+        };
+
+        window.setStudentStatus = function (regNo, status) {
+            attendanceRegistry[regNo] = status;
+            renderMetrics();
+
+            const row = document.getElementById(`row-${regNo}`);
+            if (row) {
+                row.querySelector('.present-btn').classList.toggle('active', status === 'Present');
+                row.querySelector('.absent-btn').classList.toggle('active', status === 'Absent');
+            }
+        };
+
+        window.setPaymentStatus = function (regNo, payStatus) {
+            paymentRegistry[regNo] = payStatus;
+            renderMetrics();
+
+            const row = document.getElementById(`row-${regNo}`);
+            if (row) {
+                row.querySelector('.paid-btn').classList.toggle('active', payStatus === 'Paid');
+                row.querySelector('.notpaid-btn').classList.toggle('active', payStatus === 'Not Paid');
+            }
+        };
+
+        window.saveCurrentAttendance = function () {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+
+            if (!selectedDate) {
+                alert("Please select a valid registry entry date.");
+                return;
+            }
+
+            const baseNodePath = btoa(selectedDept).replace(/=/g, "");
+            const updatePayload = {};
+            updatePayload[`attendance/${baseNodePath}/${selectedDate}`] = attendanceRegistry;
+            updatePayload[`payments/${baseNodePath}/${selectedDate}`] = paymentRegistry;
+
+            db.ref().update(updatePayload)
+                .then(() => alert("Cloud Sync Complete! Data successfully backed up."))
+                .catch((err) => alert("Transactional Exception: " + err.message));
+        };
+
+        window.filterAndRender = function () {
+            const selectedDept = document.getElementById('dept-select').value;
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const tableBody = document.getElementById('student-table-body');
+
+            tableBody.innerHTML = "";
+
+            const filteredList = studentDataset.filter(student => {
+                const matchesDept = student.dept === selectedDept;
+                const matchesSearch = student.name.toLowerCase().includes(searchVal) ||
+                    student.regNo.toLowerCase().includes(searchVal);
+                return matchesDept && matchesSearch;
+            });
+
+            if (filteredList.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:gray;">No matching department records indexed in workspace.</td></tr>`;
+                renderMetrics();
+                return;
+            }
+
+            filteredList.forEach(student => {
+                const currentStatus = attendanceRegistry[student.regNo] || "Present";
+                const currentPayStatus = paymentRegistry[student.regNo] || "Not Paid";
+
+                const tr = document.createElement('tr');
+                tr.id = `row-${student.regNo}`;
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:#1a237e;">${student.regNo}</td>
+                    <td style="font-weight:600;">${student.name}</td>
+                    <td><span class="dept-lbl" style="font-size:0.85rem; color:#555;">${student.dept}</span></td>
+                    <td>${student.year}</td>
+                  
+                    <td align="center">
+                        <div class="action-cell">
+                            <button class="btn-status paid-btn ${currentPayStatus === 'Paid' ? 'active' : ''}" onclick="setPaymentStatus('${student.regNo}', 'Paid')">
+                                <i class="fa-solid fa-money-bill-wave"></i> Paid
+                            </button>
+                            <button class="btn-status notpaid-btn ${currentPayStatus === 'Not Paid' ? 'active' : ''}" onclick="setPaymentStatus('${student.regNo}', 'Not Paid')">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Not Paid
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            renderMetrics();
+        };
+
+        function renderMetrics() {
+            const selectedDept = document.getElementById('dept-select').value;
+            const totalStudents = studentDataset.filter(s => s.dept === selectedDept).length;
+
+            let presentCount = 0, absentCount = 0, paidCount = 0, notPaidCount = 0;
+
+            studentDataset.forEach(student => {
+                if (student.dept === selectedDept) {
+                    const status = attendanceRegistry[student.regNo] || "Present";
+                    if (status === "Present") presentCount++;
+                    if (status === "Absent") absentCount++;
+
+                    const payStatus = paymentRegistry[student.regNo] || "Not Paid";
+                    if (payStatus === "Paid") paidCount++;
+                    if (payStatus === "Not Paid") notPaidCount++;
+                }
+            });
+
+            document.getElementById('stat-total').innerText = totalStudents;
+            document.getElementById('stat-present').innerText = presentCount;
+            document.getElementById('stat-absent').innerText = absentCount;
+            document.getElementById('stat-paid').innerText = paidCount;
+            document.getElementById('stat-notpaid').innerText = notPaidCount;
+        }
+
+        window.generateReport = function () {
+            const selectedDept = document.getElementById('dept-select').value;
+            const selectedDate = document.getElementById('date-select').value;
+            const reportTableBody = document.getElementById('report-table-body');
+
+            document.getElementById('report-dept-lbl').innerText = selectedDept;
+            document.getElementById('report-date-lbl').innerText = selectedDate || "Not Specified";
+            reportTableBody.innerHTML = "";
+
+            const targetStudents = studentDataset.filter(s => s.dept === selectedDept);
+
+            let reportPresent = 0;
+            let reportAbsent = 0;
+            let reportPaid = 0;
+            let reportNotPaid = 0;
+
+            if (targetStudents.length === 0) {
+                reportTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px;">Empty allocation map.</td></tr>`;
+            } else {
+                targetStudents.forEach(student => {
+                    const status = attendanceRegistry[student.regNo] || "Present";
+                    const payStatus = paymentRegistry[student.regNo] || "Not Paid";
+
+                    if (status === "Present") reportPresent++;
+                    else reportAbsent++;
+
+                    if (payStatus === "Paid") reportPaid++;
+                    else reportNotPaid++;
+
+                    const statusColor = status === "Present" ? "color:#2e7d32; font-weight:700;" : "color:#c62828; font-weight:700;";
+                    const payColor = payStatus === "Paid" ? "color:#2e7d32; font-weight:700;" : "color:#c62828; font-weight:700;";
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding:10px; border: 1px solid #ddd;">${student.regNo}</td>
+                        <td style="padding:10px; border: 1px solid #ddd;">${student.name}</td>
+                        <td style="padding:10px; border: 1px solid #ddd;">${student.dept}</td>
+                   
+                        <td style="padding:10px; border: 1px solid #ddd; ${payColor}">${payStatus}</td>
+                    `;
+                    reportTableBody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('report-summary-box').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; text-align: center; font-size: 0.9rem;">
+                                   <div style="background: #f1f8e9; border: 1px solid #c5e1a5; padding: 10px; border-radius: 4px;">
+                        <strong style="color: #2e7d32;">Total Present</strong>
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-top: 4px; color: #1b5e20;">${reportPresent}</div>
+                    </div>
+                    <div style="background: #ffebee; border: 1px solid #ffcdd2; padding: 10px; border-radius: 4px;">
+                        <strong style="color: #c62828;">Total Absent</strong>
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-top: 4px; color: #b71c1c;">${reportAbsent}</div>
+                    </div>
+                    <div style="background: #e8f5e9; border: 1px solid #a5d6a7; padding: 10px; border-radius: 4px;">
+                        <strong style="color: #2e7d32;">Fees Paid</strong>
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-top: 4px; color: #1b5e20;">${reportPaid}</div>
+                    </div>
+                    <div style="background: #fff3e0; border: 1px solid #ffe0b2; padding: 10px; border-radius: 4px;">
+                        <strong style="color: #e65100;">Fees Pending</strong>
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-top: 4px; color: #e65100;">${reportNotPaid}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('report-modal').classList.remove('hidden');
+        };
+
+        window.closeModal = function () {
+            document.getElementById('report-modal').classList.add('hidden');
+        };
+    </script>
+</body>
+
+</html>
